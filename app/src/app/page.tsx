@@ -4,7 +4,10 @@ import { LatestPost } from "~/app/_components/post";
 import { api, HydrateClient } from "~/trpc/server";
 
 export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" });
+  
+    const hello = await api.post.hello({ text: "from tRPC" });
+  const radar = await api.radar.getAttackPair({limit: 2})
+  console.log(radar) 
 
   void api.post.getLatest.prefetch();
 
