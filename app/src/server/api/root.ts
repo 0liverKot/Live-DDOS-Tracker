@@ -1,15 +1,28 @@
 import { postRouter } from "~/server/api/routers/post";
-import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
+import { createCallerFactory, createTRPCRouter, t } from "~/server/api/trpc";
 import { radarRouter } from "./routers/radar";
+import EventEmitter, { on } from "node:events";
+import type { RadarAttackPair } from "./schemas/radar";
 
 /**
  * This is the primary router for your server.
  *
  * All routers added in /api/routers should be manually added here.
  */
+
+export const ee = new EventEmitter();
+
 export const appRouter = createTRPCRouter({
   post: postRouter,
-  radar: radarRouter
+  radar: radarRouter,
+
+  onCacheUpdate: t.procedure.subscription(async function* (opts) {
+    for await (const [data] of on(ee, 'update', {
+        signal: opts.signal
+    })) {
+        yield data as [RadarAttackPair, RadarAttackPair];
+    }
+  })
 });
 
 // export type definition of API
