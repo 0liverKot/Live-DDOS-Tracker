@@ -5,6 +5,5 @@ export default async function Home() {
 
 
       return (
-            <NotificationListener></NotificationListener>
         )
     }

@@ -3,7 +3,7 @@ import { api } from "~/trpc/react";
 import { useEffect, useState } from "react";
 import type { RadarAttackPair } from "~/server/api/schemas/radar";
 
-export function NotificationListener() {
+export function NotificationListener(): void {
 
     const attackPairQuery = api.radar.getAttackPair.useQuery({limit: 10})
     console.log("hello")    
@@ -22,12 +22,6 @@ export function NotificationListener() {
             setAttackPairs(() => newAttackPairs)            
         }
     })
-
-    return (
-        <ul>
-            {attackPairs?.map(attackPair => 
-                <li key={JSON.stringify(attackPair)}>{JSON.stringify(attackPair)}</li>
-                )}
-        </ul>
-    )
 }
+
+
