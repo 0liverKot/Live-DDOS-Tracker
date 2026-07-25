@@ -3,6 +3,7 @@ import { createCallerFactory, createTRPCRouter, t } from "~/server/api/trpc";
 import { radarRouter } from "./routers/radar";
 import EventEmitter, { on } from "node:events";
 import type { RadarAttackPair } from "./schemas/radar";
+import "./radarCache"
 
 /**
  * This is the primary router for your server.
@@ -20,7 +21,7 @@ export const appRouter = createTRPCRouter({
     for await (const [data] of on(ee, 'update', {
         signal: opts.signal
     })) {
-        yield data as [RadarAttackPair, RadarAttackPair];
+        yield data as RadarAttackPair;
     }
   })
 });

@@ -5,22 +5,30 @@ import { ee } from "./root"
 const limit = 10
 
 interface RadarCache {
-    currentData: RadarAttackPair
+
+    currentData: RadarAttackPair | null
     previousData: RadarAttackPair | null
     updating: boolean
 }
-const initialData = await getRadarAttackPair(limit)
+
 const radarCache: RadarCache = {
-    currentData: initialData,
+
+    currentData: null,
     previousData: null,
     updating: false
 }
 
 export async function updateCache() {
+
     radarCache.updating = true
     const result = await getRadarAttackPair(limit)
+    radarCache.previousData = radarCache.currentData
     radarCache.currentData = result
     radarCache.updating = false
-    
-    ee.emit('udate', [radarCache.currentData, radarCache.previousData])
+
+    ee.emit('update', radarCache.currentData)
 }
+
+updateCache()
+    .then(() => setInterval(() => { void updateCache() }, 30_00))
+    .catch(console.error)
