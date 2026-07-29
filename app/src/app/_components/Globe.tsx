@@ -5,8 +5,7 @@
 */
 
 "use client";
-import type { FeatureCollection } from "geojson"
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 import { Color, Scene, Fog, PerspectiveCamera, Vector3, Group } from "three";
 import ThreeGlobe from "three-globe";
 import { useThree, Canvas, extend } from "@react-three/fiber";
@@ -251,7 +250,7 @@ export function WebGLRendererConfig() {
   return null;
 }
  
-export function World(props: WorldProps) {
+export const  World = memo(function World(props: WorldProps) {
   const { globeConfig } = props;
   const scene = new Scene();
   scene.fog = new Fog(0xffffff, 400, 2000);
@@ -285,7 +284,7 @@ export function World(props: WorldProps) {
       />
     </Canvas>
   );
-}
+})
  
 export function hexToRgb(hex: string) {
   var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
