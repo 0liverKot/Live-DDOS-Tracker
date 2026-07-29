@@ -30,5 +30,5 @@ export async function updateCache() {
 }
 
 updateCache()
-    .then(() => setInterval(() => { void updateCache() }, 30_00))
+    .then(() => setInterval(() => { void updateCache() }, 6000))
     .catch(console.error)
