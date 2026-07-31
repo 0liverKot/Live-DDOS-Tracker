@@ -5,12 +5,14 @@
 */
 
 "use client";
-import { useEffect, useRef, useState, memo } from "react";
+import { useEffect, useRef, useState, memo, useMemo } from "react";
 import { Color, Scene, Fog, PerspectiveCamera, Vector3, Group } from "three";
 import ThreeGlobe from "three-globe";
 import { useThree, Canvas, extend } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import countries from "public/data/globedata.json";
+import { useStack } from "../hooks/useStack";
+import { getSampleArc } from "../utils/sampleArcGenerator";
 declare module "@react-three/fiber" {
   interface ThreeElements {
     threeGlobe: ThreeElements["mesh"] & (new () => ThreeGlobe);
@@ -59,14 +61,9 @@ export type GlobeConfig = {
   autoRotateSpeed?: number;
 };
  
-interface WorldProps {
-  globeConfig: GlobeConfig;
-  data: Position[];
-}
- 
 let numbersOfRings = [0];
  
-export function Globe({ globeConfig, data }: WorldProps) {
+export function Globe({globeConfig}: {globeConfig: GlobeConfig}) {
   const globeRef = useRef<ThreeGlobe | null>(null);
   const groupRef = useRef<Group>(null!);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -87,6 +84,9 @@ export function Globe({ globeConfig, data }: WorldProps) {
     maxRings: 3,
     ...globeConfig,
   };
+
+  // prevents reinitialisation on every re-render
+  const data: Position[] = useMemo(() => [getSampleArc()], []);
  
   // Initialize globe only once
   useEffect(() => {
@@ -234,7 +234,13 @@ export function Globe({ globeConfig, data }: WorldProps) {
       clearInterval(interval);
     };
   }, [isInitialized, data]);
- 
+
+  
+  const { stack, latest } = useStack()
+  useEffect(() => {
+    globeRef.current?.arcsData([getSampleArc()])
+  }, [stack, data])
+
   return <group ref={groupRef} />;
 }
  
@@ -250,8 +256,7 @@ export function WebGLRendererConfig() {
   return null;
 }
  
-export const  World = memo(function World(props: WorldProps) {
-  const { globeConfig } = props;
+export const  World = memo(function World({ globeConfig }: {globeConfig: GlobeConfig}) {
   const scene = new Scene();
   scene.fog = new Fog(0xffffff, 400, 2000);
   return (
@@ -271,7 +276,7 @@ export const  World = memo(function World(props: WorldProps) {
         position={new Vector3(-200, 500, 200)}
         intensity={0.8}
       />
-      <Globe {...props} />
+      <Globe globeConfig={globeConfig}/>
       <OrbitControls
         enablePan={false}
         enableZoom={false}
