@@ -1,6 +1,6 @@
 'use client';
 import { memo, Suspense, useEffect, useMemo, useState } from "react";
-import type{  GlobeConfig, Position } from "./Globe";
+import type{  GlobeConfig } from '../utils/globeTypes'
 import { useStack } from "../hooks/useStack";
 import React from "react";
 

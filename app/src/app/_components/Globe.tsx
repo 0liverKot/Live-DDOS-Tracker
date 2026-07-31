@@ -12,7 +12,8 @@ import { useThree, Canvas, extend } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import countries from "public/data/globedata.json";
 import { useStack } from "../hooks/useStack";
-import { getSampleArc } from "../utils/sampleArcGenerator";
+import { getSampleArc, getPoints } from "../utils/globeFuncs";
+import type { Position, GlobeConfig } from "../utils/globeTypes";
 declare module "@react-three/fiber" {
   interface ThreeElements {
     threeGlobe: ThreeElements["mesh"] & (new () => ThreeGlobe);
@@ -24,42 +25,6 @@ extend({ ThreeGlobe: ThreeGlobe });
 const RING_PROPAGATION_SPEED = 3;
 const aspect = 1.2;
 const cameraZ = 300;
- 
-export type Position = {
-  order: number;
-  startLat: number;
-  startLng: number;
-  endLat: number;
-  endLng: number;
-  arcAlt: number;
-  color: string;
-};
- 
-export type GlobeConfig = {
-  pointSize?: number;
-  globeColor?: string;
-  showAtmosphere?: boolean;
-  atmosphereColor?: string;
-  atmosphereAltitude?: number;
-  emissive?: string;
-  emissiveIntensity?: number;
-  shininess?: number;
-  polygonColor?: string;
-  ambientLight?: string;
-  directionalLeftLight?: string;
-  directionalTopLight?: string;
-  pointLight?: string;
-  arcTime?: number;
-  arcLength?: number;
-  rings?: number;
-  maxRings?: number;
-  initialPosition?: {
-    lat: number;
-    lng: number;
-  };
-  autoRotate?: boolean;
-  autoRotateSpeed?: number;
-};
  
 let numbersOfRings = [0];
  
@@ -238,7 +203,9 @@ export function Globe({globeConfig}: {globeConfig: GlobeConfig}) {
   
   const { stack, latest } = useStack()
   useEffect(() => {
-    globeRef.current?.arcsData([getSampleArc()])
+    const newArc = getSampleArc()
+    globeRef.current?.arcsData([newArc])
+    globeRef.current?.pointsData(getPoints(newArc, globeConfig))
   }, [stack, data])
 
   return <group ref={groupRef} />;
