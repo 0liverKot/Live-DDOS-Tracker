@@ -13,12 +13,19 @@ const serverCache: ServerCache = {
 }
 
 export async function updateCache() {
-
-    const result = await getMeasurementOfPopularDomains()
-    serverCache.currentData = result
-    ee.emit('update', serverCache.currentData)
+    
+    try { 
+        const result = await getMeasurementOfPopularDomains()
+        serverCache.currentData = result
+        ee.emit('update', serverCache.currentData)
+    } catch(err) {
+        console.error('Cache Update Failed: ', err)
+    }
 }
 
-updateCache()
-    .then(() => setInterval(() => { void updateCache() }, 60000))
-    .catch(console.error)
+async function poll() {
+    await updateCache()
+    setTimeout(() => { void poll() }, 120000)
+}
+
+void poll()
