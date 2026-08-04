@@ -203,6 +203,7 @@ export function Globe({globeConfig}: {globeConfig: GlobeConfig}) {
   
   const { stack, latest } = useStack()
   useEffect(() => {
+    console.log(latest)
     const newArc = getSampleArc()
     globeRef.current?.arcsData([newArc])
     globeRef.current?.pointsData(getPoints(newArc, globeConfig))

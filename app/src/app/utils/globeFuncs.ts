@@ -23,7 +23,6 @@ export const getSampleArc = () => {
         color: color
     }
     
-
     return sampleArc
 }
 
@@ -44,5 +43,6 @@ export const getPoints = (arc: Position, defaultProps: GlobeConfig) => {
         lat: arc.endLat,
         lng: arc.endLng,
         });
+        
     return points;
     }

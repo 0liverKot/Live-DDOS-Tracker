@@ -26,6 +26,7 @@ export async function updateCache() {
     radarCache.currentData = result
     radarCache.updating = false
 
+    console.log(radarCache.currentData)
     ee.emit('update', radarCache.currentData)
 }
 

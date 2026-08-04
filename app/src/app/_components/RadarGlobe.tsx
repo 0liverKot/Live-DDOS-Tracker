@@ -34,13 +34,6 @@ const RadarGlobe = memo(function RadarGlobe({}) {
         autoRotateSpeed: 0.5,
     }), []);
     
-    useEffect(() => {
-        console.log(`STACK LENGTH: ${stack.length}`)
-        stack.forEach((pairs) => {
-            console.log(pairs)
-        })
-    }, [stack])
-
     // guard against server side rendering
     const [isClient, setIsClient] = useState(false);
     useEffect(() => setIsClient(true), []);
