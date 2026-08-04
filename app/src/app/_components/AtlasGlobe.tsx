@@ -1,15 +1,13 @@
 'use client';
 import { memo, Suspense, useEffect, useMemo, useState } from "react";
 import type{  GlobeConfig } from '../utils/globeTypes'
-import { useStack } from "../hooks/useStack";
 import React from "react";
 
 const World = React.lazy(() => 
     import("./Globe").then((m) => ({default: m.World}))
 ) 
 
-const RadarGlobe = memo(function RadarGlobe({}) {
-    const { stack, latest } = useStack()
+const AtlasGlobe = memo(function AtlasGlobe({}) {
     
     const globeConfig = useMemo<GlobeConfig>(() => ({
         pointSize: 4,
@@ -46,4 +44,4 @@ const RadarGlobe = memo(function RadarGlobe({}) {
     )
 })
 
-export default RadarGlobe;
+export default AtlasGlobe;

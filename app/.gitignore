@@ -45,4 +45,7 @@ yarn-error.log*
 # idea files
 .idea
 
+# contains files mainly used for exploring api results
+test/
+
 /generated

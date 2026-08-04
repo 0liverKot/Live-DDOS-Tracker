@@ -1,9 +1,9 @@
 import { postRouter } from "~/server/api/routers/post";
 import { createCallerFactory, createTRPCRouter, t } from "~/server/api/trpc";
-import { radarRouter } from "./routers/radar";
+import { atlasRouter } from "./routers/atlas";
 import EventEmitter, { on } from "node:events";
-import type { RadarAttackPair } from "./schemas/radar";
-import "./radarCache"
+import type { DNSResponse } from "./schemas/dnsResponseSchema";
+import "./ServerCache"
 
 /**
  * This is the primary router for your server.
@@ -15,13 +15,13 @@ export const ee = new EventEmitter();
 
 export const appRouter = createTRPCRouter({
   post: postRouter,
-  radar: radarRouter,
+  atlas: atlasRouter,
 
   onCacheUpdate: t.procedure.subscription(async function* (opts) {
     for await (const [data] of on(ee, 'update', {
         signal: opts.signal
     })) {
-        yield data as RadarAttackPair;
+        yield data as DNSResponse;
     }
   })
 });

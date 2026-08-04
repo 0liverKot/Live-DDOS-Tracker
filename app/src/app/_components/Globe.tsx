@@ -11,8 +11,6 @@ import ThreeGlobe from "three-globe";
 import { useThree, Canvas, extend } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import countries from "public/data/globedata.json";
-import { useStack } from "../hooks/useStack";
-import { getSampleArc, getPoints } from "../utils/globeFuncs";
 import type { Position, GlobeConfig } from "../utils/globeTypes";
 declare module "@react-three/fiber" {
   interface ThreeElements {
@@ -50,8 +48,7 @@ export function Globe({globeConfig}: {globeConfig: GlobeConfig}) {
     ...globeConfig,
   };
 
-  // prevents reinitialisation on every re-render
-  const data: Position[] = useMemo(() => [getSampleArc()], []);
+  const data: Position[] = useMemo(() => [], []);
  
   // Initialize globe only once
   useEffect(() => {
@@ -199,15 +196,6 @@ export function Globe({globeConfig}: {globeConfig: GlobeConfig}) {
       clearInterval(interval);
     };
   }, [isInitialized, data]);
-
-  
-  const { stack, latest } = useStack()
-  useEffect(() => {
-    console.log(latest)
-    const newArc = getSampleArc()
-    globeRef.current?.arcsData([newArc])
-    globeRef.current?.pointsData(getPoints(newArc, globeConfig))
-  }, [stack, data])
 
   return <group ref={groupRef} />;
 }
