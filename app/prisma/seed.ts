@@ -4,7 +4,7 @@ const db = new PrismaClient();
 
 type Probe = {
     id: number;
-    status: number;
+    status: { id: number }
     geometry: { coordinates: [number, number] };
 }
 
@@ -31,9 +31,8 @@ async function getAllProbes(): Promise<Probe[]> {
 
 async function main() {
     const probes = await getAllProbes();
-    
     const data = probes.
-        filter((p) => p.status === 1 && p.geometry).// only use probes that are connected and have a location listed
+        filter((p) => p.status.id === 1 && p.geometry).// only use probes that are connected and have a location listed
         map((p) => ({
             id: p.id,
             latitude: p.geometry.coordinates[1],
@@ -41,7 +40,7 @@ async function main() {
         }))
 
         const { count } = await db.probe.createMany({ data, skipDuplicates: true});
-        console.log(`Seeding complete, ${count} probes`)
+        console.log(`Seeding complete, ${count} probes added`)
 }
 
 main().catch((e) => {
