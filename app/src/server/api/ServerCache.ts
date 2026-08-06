@@ -13,7 +13,7 @@ const serverCache: ServerCache = {
 }
 
 export async function updateCache() {
-    
+
     try { 
         const result = await getMeasurementOfPopularDomains()
         serverCache.currentData = result
